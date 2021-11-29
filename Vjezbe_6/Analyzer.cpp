@@ -4,6 +4,10 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TLegend.h>
+#include <vector>
+#include <TLorentzVector.h>
+#include <iostream>
 
 void Analyzer::Loop()
 {
@@ -47,10 +51,10 @@ void Analyzer::PlotHistogram(){
 	TCanvas* c = new TCanvas("c", "c", 1800, 1800);
 	c->Divide(2, 2);
 
-	TH1F* h1 = new TH1F("histo1", "LepP1", 100, 0, 150);
-	TH1F* h2 = new TH1F("histo2", "LepP2", 100, 0, 150);
-	TH1F* h3 = new TH1F("histo3" "LepP3", 100, 0, 150);
-	TH1F* h4 = new TH1F("histo4", "LepP4", 100, 0, 150);
+	TH1F* h1 = new TH1F("h1", "LepP1", 100, 0, 150);
+	TH1F* h2 = new TH1F("h2", "LepP2", 100, 0, 150);
+	TH1F* h3 = new TH1F("h3", "LepP3", 100, 0, 150);
+	TH1F* h4 = new TH1F("h4", "LepP4", 100, 0, 150);
 
 	if (fChain == 0)
 		return;
@@ -65,18 +69,21 @@ void Analyzer::PlotHistogram(){
 		nbytes += nb;
 		// if (Cut(ientry) < 0) continue;
 		
-		h1->Fill(lepPt->at(2));
+		h1->Fill(LepPt->at(2));
 		h2->Fill(LepPt->at(3));
 		h3->Fill(LepPt->at(0));
 		h4->Fill(LepPt->at(1));
 		
 	}
 
+	//prvi od cetiri kanvasa, cd(1), gornji lijevi, p/noe
 	c->cd(1);
+
 	h1->GetXaxis()->SetTitle("p_{T} (GeV/c)");
 	h1->GetYaxis()->SetTitle("number of events");
-	h1->SetFillColor(kBlue);
+	//h1->SetFillColor(kBlue);
 	h1->SetStats(0);
+	h1->SetLineColor(kBlue);
 	h1->Draw();
 
 	h2->SetLineColor(kRed);
@@ -90,6 +97,17 @@ void Analyzer::PlotHistogram(){
 	h4->SetLineColor(kBlue);
 	h4->SetLineWidth(2);
 	h4->Draw("hist same");
+
+	//svaki kanvas ima 4 velicine, h1-h4
+
+	//postavljanje legende
+	TLegend* legend = new TLegend(0.6,0.8,0.9,0.9);
+	legend->SetTextSize(0.03);
+	legend->AddEntry(h1,"Decay lepton 1","f");
+	legend->AddEntry(h2,"Decay lepton 2","l");
+	legend->AddEntry(h3,"Decay lepton 3","l");
+	legend->AddEntry(h4,"Decay lepton 4","l");
+	legend->Draw();
 	
 	c->SaveAs("LeptPt.png");
 	

@@ -13,10 +13,9 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
-#include "vector"
-#include "vector"
-#include "vector"
-#include "vector"
+#include <vector>
+
+using namespace std;
 
 class Analyzer {
 public :
@@ -1436,6 +1435,8 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   virtual void PlotHistogram();
 };
 
 #endif
