@@ -48,6 +48,8 @@ void Analyzer::Loop()
 }
 
 void Analyzer::PlotHistogram(){
+	/*
+	Zadatak2
 	TCanvas* c = new TCanvas("c", "c", 1800, 1800);
 	c->Divide(2, 2);
 
@@ -55,6 +57,7 @@ void Analyzer::PlotHistogram(){
 	TH1F* h2 = new TH1F("h2", "LepP2", 100, 0, 150);
 	TH1F* h3 = new TH1F("h3", "LepP3", 100, 0, 150);
 	TH1F* h4 = new TH1F("h4", "LepP4", 100, 0, 150);
+	
 
 	if (fChain == 0)
 		return;
@@ -69,6 +72,8 @@ void Analyzer::PlotHistogram(){
 		nbytes += nb;
 		// if (Cut(ientry) < 0) continue;
 		
+		
+		Zadatak2
 		h1->Fill(LepPt->at(2));
 		h2->Fill(LepPt->at(3));
 		h3->Fill(LepPt->at(0));
@@ -110,5 +115,56 @@ void Analyzer::PlotHistogram(){
 	legend->Draw();
 	
 	c->SaveAs("LeptPt.png");
+	*/
+
+	//Zadatak3
+	//stvaramo 4 leptona klase lorentzvektor, 2 zbozona koja nastaju od 4 leptona i 1 Higgs produkt 2z
+	TLorentzVector* lep1 = new TLorentzVector();
+	TLorentzVector* lep2 = new TLorentzVector();
+	TLorentzVector* lep3 = new TLorentzVector();
+	TLorentzVector* lep4 = new TLorentzVector();
+	TLorentzVector* Z1 = new TLorentzVector();
+	TLorentzVector* Z2 = new TLorentzVector();
+	TLorentzVector* Higgs = new TLorentzVector();
 	
+	TCanvas* c = new TCanvas("c", "c", 900, 900);
+	TH1F* h1 = new TH1F("h1", "Reconstructed mass from 4 leptons", 200, 0.0, 150.0);
+	
+	if (fChain == 0)
+		return;
+	Long64_t nentries = fChain->GetEntriesFast();
+	Long64_t nbytes = 0, nb = 0;
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
+	{
+		Long64_t ientry = LoadTree(jentry);
+		if (ientry < 0)
+			break;
+		nb = fChain->GetEntry(jentry);
+		nbytes += nb;
+		// if (Cut(ientry) < 0) continue;
+		
+		lep1->SetPtEtaPhiM(LepPt->at(0), LepEta->at(0), LepPhi->at(0), 0.0);
+		lep2->SetPtEtaPhiM(LepPt->at(1), LepEta->at(1), LepPhi->at(1), 0.0);
+		lep3->SetPtEtaPhiM(LepPt->at(2), LepEta->at(2), LepPhi->at(2), 0.0);
+		lep4->SetPtEtaPhiM(LepPt->at(3), LepEta->at(3), LepPhi->at(3), 0.0);
+			
+		*Z1 = *lep1 + *lep2;
+		*Z2 = *lep3 + *lep4;
+		*Higgs = *Z1 + *Z2;
+		
+		h1->Fill(Higgs->M());
+	}
+	
+	gPad->SetLeftMargin(0.15);
+	
+	h1->GetXaxis()->SetTitle("m_{4l} (GeV)");
+	h1->GetYaxis()->SetTitle("no. of events");
+	h1->SetStats(0);
+	h1->GetXaxis()->SetRangeUser(90, 140);
+	h1->SetLineColor(kAzure);
+	h1->SetFillColor(kAzure);
+	h1->Draw();
+	
+	c->SaveAs("Z3.png");
+
 }
