@@ -128,7 +128,12 @@ void Analyzer::PlotHistogram(){
 	TLorentzVector* Higgs = new TLorentzVector();
 	
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
-	TH1F* h1 = new TH1F("h1", "Reconstructed mass from 4 leptons", 200, 0.0, 150.0);
+	TH1F* h1 = new TH1F("h1", "Reconstructed mass from 4 leptons", 50, 90.0, 140.0);
+
+	//zadatak 4 - ucitavanje sume svih tezina (bin content) sa ser
+	TFile f("/home/public/data/ggH125/ZZ4lAnalysis.root"); 
+	TH1F* histoCounter = (TH1F*)f.Get("ZZTree/Counters");
+	double w, contentbin;
 	
 	if (fChain == 0)
 		return;
@@ -152,9 +157,13 @@ void Analyzer::PlotHistogram(){
 		*Z2 = *lep3 + *lep4;
 		*Higgs = *Z1 + *Z2;
 		
-		h1->Fill(Higgs->M());
+		//zadatak4
+		contentbin = histoCounter->GetBinContent(40);
+		w = (137.0 * 1000.0 * xsec * overallEventWeight) / contentbin;
+		h1->Fill(Higgs->M(),w);
 	}
 	
+	//plotanje
 	gPad->SetLeftMargin(0.15);
 	
 	h1->GetXaxis()->SetTitle("m_{4l} (GeV)");
@@ -163,8 +172,12 @@ void Analyzer::PlotHistogram(){
 	h1->GetXaxis()->SetRangeUser(90, 140);
 	h1->SetLineColor(kAzure);
 	h1->SetFillColor(kAzure);
-	h1->Draw();
+	h1->Draw("HIST");
+
+	//integral za zad 4
+	cout << h1->Integral(1, 50) << endl;
+
 	
-	c->SaveAs("Z3.png");
+	c->SaveAs("Z4.png");
 
 }
