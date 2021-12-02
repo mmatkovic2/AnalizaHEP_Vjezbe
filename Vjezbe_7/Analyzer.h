@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1F.h>
 
 // Header file for the classes stored in the TTree if any.
 #include <vector>
@@ -1426,6 +1427,9 @@ public :
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen;   //!
 
+   TH1F* h1;
+   TH1F* h2;
+   
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
    virtual Int_t    Cut(Long64_t entry);
@@ -1458,6 +1462,9 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    }
    Init(tree);
 */
+
+	h1 = new TH1F("histo1", "Reconstructed mass", 50, 70.0, 170.0);
+   	h2 = new TH1F("histo2", "", 50, 70.0, 170.0);
 }
 
 Analyzer::~Analyzer()
