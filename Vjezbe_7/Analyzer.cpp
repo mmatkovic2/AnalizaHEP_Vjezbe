@@ -2,6 +2,7 @@
 #include "Analyzer.h"
 #include <TH1F.h>
 #include <TH2.h>
+#include <TH2F.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TLegend.h>
@@ -327,7 +328,7 @@ void Analyzer::PlotHistogram(TString path){
 	*/
 
 
-	//zadatak3
+	//zadatak3 i 5
 	TLorentzVector* lep1 = new TLorentzVector();
 	TLorentzVector* lep2 = new TLorentzVector();
 	TLorentzVector* lep3 = new TLorentzVector();
@@ -373,11 +374,15 @@ void Analyzer::PlotHistogram(TString path){
 		{
 			sigDiscriminant = 1 / (1 + p_QQB_BKG_MCFM / p_GG_SIG_ghg2_1_ghz1_1_JHUGen);
 			histoSignal->Fill(sigDiscriminant,w);
+			//zadatak 5
+			histo2Dsig->Fill(Higgs->M(),sigDiscriminant,w);
 		}
 		else if(path.Contains("qqZZ"))
 		{
 			bcgDiscriminant = 1 / (1 + constant * p_QQB_BKG_MCFM / p_GG_SIG_ghg2_1_ghz1_1_JHUGen);
 			histoBackground->Fill(bcgDiscriminant,w);
+			//zadatak 5
+			histo2Dbcg->Fill(Higgs->M(),bcgDiscriminant,w);
 		}
 	}
 }
@@ -415,9 +420,29 @@ void Analyzer::Drawing()
 	legend->AddEntry(histoSignal,"Signal","l");
 	legend->AddEntry(histoBackground,"Background","l");
 	legend->Draw();
+
+	c->cd(2);		// zad 4
 	
+	c->cd(3);		// Reconstructed mass vs KinematicDiscriminator (bcg)
 	
-	c->SaveAs("Diskriminator.png");
+	histo2Dbcg->SetTitle("m_{4l} vs D_{kin} for background");
+	histo2Dbcg->GetXaxis()->SetTitle("m_{4l} (GeV)");
+	histo2Dbcg->GetYaxis()->SetTitle("D_{kin}");
+	histo2Dbcg->SetMinimum(-0.01);
+	histo2Dbcg->SetStats(0);
+	histo2Dbcg->Draw("COLZ");
+	
+	c->cd(4);		// Reconstructed mass vs KinematicDiscriminator (sig)
+	
+	histo2Dsig->SetTitle("m_{4l} vs D_{kin} for signal");
+	histo2Dsig->GetXaxis()->SetTitle("m_{4l} (GeV)");
+	histo2Dsig->GetYaxis()->SetTitle("D_{kin}");
+	histo2Dsig->SetMinimum(-0.01);
+	histo2Dsig->SetStats(0);
+	histo2Dsig->Draw("COLZ");
+	
+	c->SaveAs("2DHistogrami.png");
+	
 }
 
 
