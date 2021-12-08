@@ -61,6 +61,7 @@ void Analyzer::PlotHistogram(){
       	f->GetObject("Tree",tree);
 	Init(tree);
 
+	double tsuma, tau;
 	//zadajemo parametre fita za zadatak 1
 	//za zadatak2 ovo zakomentiramo
 	//funcfita->SetParNames("N_{0}","#tau");
@@ -79,8 +80,10 @@ void Analyzer::PlotHistogram(){
 		nbytes += nb;
 		
 		histoPodaci->Fill(t);
+		tsuma += t;
 	}
-	
+	tau = tsuma / nentries;
+	cout << "#tau = " << tau << endl;
 }
 
 void Analyzer::Drawing()
