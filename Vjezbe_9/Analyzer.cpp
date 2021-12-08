@@ -62,8 +62,9 @@ void Analyzer::PlotHistogram(){
 	Init(tree);
 
 	//zadajemo parametre fita za zadatak 1
-	funcfita->SetParNames("N_{0}","#tau");
-	funcfita->SetParameters(100, 1);
+	//za zadatak2 ovo zakomentiramo
+	//funcfita->SetParNames("N_{0}","#tau");
+	//funcfita->SetParameters(100, 1);
 	
 	if (fChain == 0)
 		return;
@@ -90,12 +91,16 @@ void Analyzer::Drawing()
 	gStyle->SetOptFit();
 
 	funcfita->SetLineColor(kGreen);
+	funcfita->SetTitle("Decay - maxlikelihood; #tau (s); N_a");
 	funcfita->Draw();
 	
+	/*
+	//za Zad1 imamo ovo, za zad2 u komentar stavljeno
 	histoPodaci->SetLineColor(kRed);
 	histoPodaci->SetTitle("Decay; t (s); number of atoms");
 	histoPodaci->Draw("p E1 X0");
 	histoPodaci->Fit(funcfita);
-	
+	*/
+
 	c->SaveAs("Zadatak1Distribucija.png");
 }

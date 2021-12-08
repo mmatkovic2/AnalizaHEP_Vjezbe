@@ -73,7 +73,7 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
 */
    
 	histoPodaci = new TH1F("Number of decays", "#Tau", 100.0 , 0.0, 10.0);
-	funcfita = new TF1("funcfita", "[0]*exp(-x/[1])*(1/[B])" ,0.0, 10.0);
+	funcfita = new TF1("funcfita", "82.47*(1/x)*exp(-1/x)" ,0.0, 10.0);
 }
 
 Analyzer::~Analyzer()
