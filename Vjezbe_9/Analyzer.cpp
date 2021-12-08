@@ -102,5 +102,5 @@ void Analyzer::Drawing()
 	histoPodaci->Fit(funcfita);
 	*/
 
-	c->SaveAs("Zadatak1Distribucija.png");
+	c->SaveAs("Zadatak2MaxLik.png");
 }
