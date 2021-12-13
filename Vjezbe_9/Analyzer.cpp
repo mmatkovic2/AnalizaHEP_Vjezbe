@@ -109,10 +109,25 @@ void Analyzer::Drawing()
 	//trazimo minimum ove funkcije sada, odnosno tocku x gdje se postize minimum
 	cout << "Minimum funkcije likelihood je na polozaju tau = " << funcLN->GetMinimumX() << endl;
 
+	//zad 5
 	//imamo 3 vrijednosti Tau 
 	//Tau za zad1 nastao fitanjem: Tau1=1.152+-0.041
 	//Tau za zad3 nastao minimiziranjem -2lnL funkcije: Tau3=1.23506
 	//Tau za zad4 nastao traženjem minimuma na grafu: Tau4=1.23506 
+
+	//sigmu za max likelihood metodu (graf, zad 4) trazimo uz pomoc predavanja 8
+	double yMin = funcLN->GetMinimum(); //trazimo koliki je minimum -2ln(L)
+    	double x1 = funcLN->GetX(yMin + 1.0, 1.0, funcLN->GetMinimumX() - 0.0001); //trazimo x-eve
+    	double x2 = funcLN->GetX(yMin + 1.0, funcLN->GetMinimumX() + 0.0001, 1.5); //gdje imamo y=min+1
+	//sigma je samo razlika tau i x1 i x2	
+	double sig1 = funcLN->GetMinimumX() - x1;
+	double sig2 = x2 - funcLN->GetMinimumX();
+	//ispis
+	cout << "Sigma1 je:" << sig1 << endl;
+	cout << "Sigma2 je:" << sig2 << endl;
+	//rezultati ispisa su: sigma1 = 0.0382465; sigma2= 0.0398937
+	//dakle, Tau4=1.235 +0.039 -0.038	
 	
-	c->SaveAs("Zadatak4lnL.png");
+
+	c->SaveAs("Zadatak5lnL.png");
 }
