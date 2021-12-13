@@ -12,6 +12,7 @@
 #include <THStack.h>
 #include <TString.h>
 #include <TF1.h>
+#include <cmath>
 
 void Analyzer::Loop()
 {
@@ -82,7 +83,7 @@ void Analyzer::PlotHistogram(){
 		histoPodaci->Fill(t);
 		tsuma += t;
 	}
-	tau = tsuma / nentries;
+	tau = 1.0* tsuma / nentries;
 	cout << "#tau = " << tau << endl;
 }
 
@@ -93,10 +94,6 @@ void Analyzer::Drawing()
 	gPad->SetLeftMargin(0.15);
 	gStyle->SetOptFit();
 
-	funcfita->SetLineColor(kGreen);
-	funcfita->SetTitle("Decay - maxlikelihood; #tau (s); N_a");
-	funcfita->Draw();
-	
 	/*
 	//za Zad1 imamo ovo, za zad2 u komentar stavljeno
 	histoPodaci->SetLineColor(kRed);
@@ -105,5 +102,17 @@ void Analyzer::Drawing()
 	histoPodaci->Fit(funcfita);
 	*/
 
-	c->SaveAs("Zadatak2MaxLik.png");
+	//zad 4
+	funcLN->SetLineColor(kRed);
+	funcLN->SetTitle("Log likelihood; #tau (s); -2ln(L)");
+	funcLN->Draw();
+	//trazimo minimum ove funkcije sada, odnosno tocku x gdje se postize minimum
+	cout << "Minimum funkcije likelihood je na polozaju tau = " << funcLN->GetMinimumX() << endl;
+
+	//imamo 3 vrijednosti Tau 
+	//Tau za zad1 nastao fitanjem: Tau1=1.152+-0.041
+	//Tau za zad3 nastao minimiziranjem -2lnL funkcije: Tau3=1.23506
+	//Tau za zad4 nastao traženjem minimuma na grafu: Tau4=1.23506 
+	
+	c->SaveAs("Zadatak4lnL.png");
 }

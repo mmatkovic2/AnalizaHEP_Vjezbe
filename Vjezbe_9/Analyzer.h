@@ -37,6 +37,7 @@ public :
    //histogrami TH1F i funkcije TF1
    TH1F* histoPodaci;
    TF1* funcfita;
+   TF1* funcLN;
  
 
    Analyzer(TTree *tree=0);
@@ -74,6 +75,7 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    
 	histoPodaci = new TH1F("Number of decays", "#Tau", 100.0 , 0.0, 10.0);
 	funcfita = new TF1("funcfita", "82.47*(1/x)*exp(-1/x)" ,0.0, 10.0);
+	funcLN = new TF1("funcLN", "(2/x)*1235.06+2000*log(x)" , 1.0, 1.5);
 }
 
 Analyzer::~Analyzer()
