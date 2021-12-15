@@ -27,6 +27,8 @@ public :
    
    //Vjezbe 10, zad1
    TF1 *funcfita;
+   TF1 *chisquare;   
+
 
    virtual void PlotHistogram();
    

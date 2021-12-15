@@ -40,16 +40,37 @@ void Analyzer::PlotHistogram(){
 	Double_t sila[5]={1.0, 2.0, 3.0, 4.0, 5.0};
 	Double_t silagreska[5]={0.0, 0.0, 0.0, 0.0, 0.0};
 
-
+	//zadatak3
+	chisquare = new TF1("chi square", "(([0]-x*[1])*([0]-x*[1]))/([2]*[2])+ (([3]-x*[4])*([3]-x*[4]))/([5]*[5]) + (([6]-x*[7])*([6]-x*[7]))/([8]*[8]) + (([9]-x*[10])*([9]-x*[10]))/([11]*[11]) + (([12]-x*[13])*([12]-x*[13]))/([14]*[14])", 7, 15);
+	for(int i=0; i<5*5; i=i+3)
+	{
+		chisquare->SetParameter(i, a[i/3]);
+		chisquare->SetParameter(i+1, sila[i/3]);
+		chisquare->SetParameter(i+2, agreska[i/3]);
+	}
 	
+	/*
 	TGraphErrors *graph = new TGraphErrors(N, sila, a, silagreska, agreska);
 	graph->SetTitle("Ovisnost a o F");
 	//graph->GetXAxis()->SetTitle("F [N]");
 	//graph->GetYAxis()->SetTitle("a [m/s2]");
 	graph->Draw("AP");
 	graph->Fit(funcfita);
+	*/
 
+	chisquare->SetLineColor(kRed);
+	chisquare->SetTitle("Xi kvadrat funkcija; #theta; Xi");
+	chisquare->Draw();
+	cout << "Minimum funkcije likelihood je na polozaju theta = " << chisquare->GetMinimumX() << endl;
+	double yMin = chisquare->GetMinimum(); //trazimo koliki je minimum chisquare funkcije
+    	double x1 = chisquare->GetX(yMin + 1.0, 7.0, chisquare->GetMinimumX() - 0.0001); //trazimo x-eve
+    	double x2 = chisquare->GetX(yMin + 1.0, chisquare->GetMinimumX() + 0.0001, 13); //gdje imamo y=min+1
+	//sigma je samo razlika tau i x1 i x2	
+	double sig1 = chisquare->GetMinimumX() - x1;
+	double sig2 = x2 - chisquare->GetMinimumX();
+	cout << "Theta = " << chisquare->GetMinimumX() << "-" << sig1 << "+" << sig2 << endl; 
+	cout << "Masa = " << 1/(chisquare->GetMinimumX()) << "+-" << sig1/(chisquare->GetMinimumX()*chisquare->GetMinimumX()) << endl; 
+		
 
-	
-	c->SaveAs("Zadatak1prvi.png");
+	c->SaveAs("Zadatak3.png");
 }
