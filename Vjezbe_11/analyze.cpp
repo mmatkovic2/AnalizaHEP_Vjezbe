@@ -21,11 +21,13 @@ int main()
 	double vjerojatnostpovoljnog=0.5;
 	
 	cout << "Za " << brojpovoljnih << " povoljna dogadaja od " << brojukupnih << " ukupno " " uz p = " << vjerojatnostpovoljnog << " vjerojatnost povoljnog dogadaja imamo: " << ob->Binomial(brojpovoljnih, brojukupnih, vjerojatnostpovoljnog) << " vjerojatnost." << endl;
-
 	
+	//zadatak2
 	ob->GornjaGranica(1, 4, 0.687);
 	ob->DonjaGranica(1, 4, 0.687);	
 	
+	//zadatak4
+	ob->Kocka(10, 0.683);
 	delete ob;
 	
 	return 0;

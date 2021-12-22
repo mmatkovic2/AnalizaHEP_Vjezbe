@@ -32,6 +32,10 @@ public :
    //zadatak 2
    virtual double GornjaGranica(int m1, int N1, double C);
    virtual double DonjaGranica(int m2, int N2, double C);
+
+   //Zadatak 4
+   virtual void Kocka(int N, double C);
+   
 };
 
 #endif

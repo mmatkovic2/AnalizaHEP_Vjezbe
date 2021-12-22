@@ -16,6 +16,7 @@
 #include <cmath>
 #include <TGraphPainter.h>
 #include <TGraphErrors.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -56,7 +57,7 @@ double Analyzer::GornjaGranica(int m1, int N1, double C){
 		suma1=0.0;
 	}		
 
-	cout << "Gornja granica je: " << pplus << endl;
+	//cout << "Gornja granica je: " << pplus << endl;
 	return pplus;
 }
 
@@ -74,6 +75,39 @@ double Analyzer::DonjaGranica(int m2, int N2, double C){
 		suma1=0.0;
 	}		
 
-	cout << "Donja granica je: " << pminus << endl;
+	//cout << "Donja granica je: " << pminus << endl;
 	return pminus;
 }
+
+//zadatak4
+void Analyzer::Kocka(int N, double C){
+
+	srand(time(NULL));
+	int i, j;
+	int brojac, brojpovoljnih=0;
+	double pgornja, pdonja;
+
+	for (i=0; i<1000; i++){
+		brojac=0;
+		for(j=0; j<N; j++){
+			if((rand()%6+1)==6){
+				brojac++;
+			}	
+		}
+				
+		pgornja=GornjaGranica(brojac, N, C);
+		pdonja=DonjaGranica(brojac, N, C);
+
+		if(pgornja>=(1.0/6.0) && pdonja<=(1.0/6)){
+			brojpovoljnih++;
+		}
+		cout << i << endl;
+					
+	}
+
+	cout << "Broj eksperimenata koji sadrze p u 10 bacanja u tocnom intervalu od " << C << " je: " << brojpovoljnih << endl;
+
+	
+}
+
+
