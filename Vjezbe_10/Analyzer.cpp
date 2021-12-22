@@ -70,7 +70,20 @@ void Analyzer::PlotHistogram(){
 	double sig2 = x2 - chisquare->GetMinimumX();
 	cout << "Theta = " << chisquare->GetMinimumX() << "-" << sig1 << "+" << sig2 << endl; 
 	cout << "Masa = " << 1/(chisquare->GetMinimumX()) << "+-" << sig1/(chisquare->GetMinimumX()*chisquare->GetMinimumX()) << endl; 
-		
+	
+	//zadatak2
+	double suma1=0.0;
+	double suma2=0.0;
+	double theta;	
+	for(int j=0; j<5; j++)
+	{
+		suma1=suma1+sila[j]*a[j]/(agreska[j]*agreska[j]);
+		suma2=suma2+(sila[j]/agreska[j])*(sila[j]/agreska[j]);	
+	}
+	theta=suma1/suma2;
 
-	c->SaveAs("Zadatak3.png");
+	cout << "Analitickom metodom izracunata je masa: " << 1.0/theta << "i pripadajuca greska" << suma2/theta << endl;
+
+
+	c->SaveAs("Zadatak4.png");
 }
