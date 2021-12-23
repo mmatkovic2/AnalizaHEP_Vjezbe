@@ -16,7 +16,7 @@
 #include <cmath>
 #include <TGraphPainter.h>
 #include <TGraphErrors.h>
-
+#include <TLine.h>
 
 void Analyzer::PlotHistogram(){
 
@@ -41,7 +41,7 @@ void Analyzer::PlotHistogram(){
 	Double_t silagreska[5]={0.0, 0.0, 0.0, 0.0, 0.0};
 
 	//zadatak3
-	chisquare = new TF1("chi square", "(([0]-x*[1])*([0]-x*[1]))/([2]*[2])+ (([3]-x*[4])*([3]-x*[4]))/([5]*[5]) + (([6]-x*[7])*([6]-x*[7]))/([8]*[8]) + (([9]-x*[10])*([9]-x*[10]))/([11]*[11]) + (([12]-x*[13])*([12]-x*[13]))/([14]*[14])", 7, 15);
+	chisquare = new TF1("chi square", "(([0]-x*[1])*([0]-x*[1]))/([2]*[2])+ (([3]-x*[4])*([3]-x*[4]))/([5]*[5]) + (([6]-x*[7])*([6]-x*[7]))/([8]*[8]) + (([9]-x*[10])*([9]-x*[10]))/([11]*[11]) + (([12]-x*[13])*([12]-x*[13]))/([14]*[14])", 9.5, 11);
 	for(int i=0; i<5*5; i=i+3)
 	{
 		chisquare->SetParameter(i, a[i/3]);
@@ -59,7 +59,7 @@ void Analyzer::PlotHistogram(){
 	*/
 
 	chisquare->SetLineColor(kRed);
-	chisquare->SetTitle("Xi kvadrat funkcija; #theta; Xi");
+	chisquare->SetTitle("Xi kvadrat funkcija; #theta; #chi");
 	chisquare->Draw();
 	cout << "Minimum funkcije likelihood je na polozaju theta = " << chisquare->GetMinimumX() << endl;
 	double yMin = chisquare->GetMinimum(); //trazimo koliki je minimum chisquare funkcije
@@ -82,8 +82,21 @@ void Analyzer::PlotHistogram(){
 	}
 	theta=suma1/suma2;
 
-	cout << "Analitickom metodom izracunata je masa: " << 1.0/theta << "i pripadajuca greska" << suma2/theta << endl;
+	cout << "Analitickom metodom izracunata je masa: " << 1.0/theta << " i pripadajuca greska " << suma2/(theta*theta) << endl;
 
+	TLine *l = new TLine(theta, 2.0, theta, chisquare->GetMinimum());
+	l->SetLineStyle(2);
+	l->Draw();
+	TLine *l1 = new TLine(theta-sig1, 2.0, theta-sig1, chisquare->GetMinimum()+1);
+	l1->SetLineStyle(2);
+	l1->Draw();
+	TLine *l2 = new TLine(theta+sig2, 2.0, theta+sig2, chisquare->GetMinimum()+1);
+	l2->SetLineStyle(2);
+	l2->Draw();
+	TLine *lh = new TLine(theta-sig1, chisquare->GetMinimum()+1, theta+sig2, chisquare->GetMinimum()+1);
+	lh->SetLineStyle(2);
+	lh->Draw();
+	
 
 	c->SaveAs("Zadatak4.png");
 }
