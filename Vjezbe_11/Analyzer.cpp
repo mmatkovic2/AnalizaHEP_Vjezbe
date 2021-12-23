@@ -17,6 +17,7 @@
 #include <TGraphPainter.h>
 #include <TGraphErrors.h>
 #include <stdlib.h>
+#include <TColor.h>
 
 using namespace std;
 
@@ -109,6 +110,44 @@ void Analyzer::Kocka(int N, double C){
 	cout << "Broj eksperimenata koji sadrze p u 10 bacanja u tocnom intervalu od " << C << " je: " << brojpovoljnih << endl;
 
 	
+}
+
+void Analyzer::Distribucija(int N, double C){	
+	double donjag, gornjag;
+	
+	TH1F *donjiHisto;
+	TH1F *gornjiHisto;
+	donjiHisto = new TH1F("1", "1", 10, 0.0, 10.0);
+	gornjiHisto = new TH1F("2", "2", 10, 0.0, 10.0);
+	
+	for(int r=0; r<=N; r++)
+	{
+		donjag = DonjaGranica(r, N, C);
+		gornjag = GornjaGranica(r, N, C);
+		
+		donjiHisto->SetBinContent(r, donjag);
+		gornjiHisto->SetBinContent(r, gornjag);
+	}
+	
+	TCanvas *c;
+	c = new TCanvas("c","c",1600,900);
+	gStyle->SetOptStat(0);
+	
+	gornjiHisto->SetTitle("Neymn confidence belt; n; p");
+	gornjiHisto->GetYaxis()->SetRangeUser(0.0, 1.0);
+	donjiHisto->GetYaxis()->SetRangeUser(0.0, 1.0);	
+
+	Int_t color = TColor::GetFreeColorIndex();
+	
+	gornjiHisto->SetLineColor(kBlue);
+	gornjiHisto->SetFillColor(kBlue);
+	donjiHisto->SetLineColor(kWhite);
+	donjiHisto->SetFillColor(color);
+	
+	gornjiHisto->Draw();
+	donjiHisto->Draw("same");
+	
+	c->SaveAs("Zadatak4.png");
 }
 
 

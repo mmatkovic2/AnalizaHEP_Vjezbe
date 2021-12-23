@@ -35,6 +35,9 @@ public :
 
    //Zadatak 4
    virtual void Kocka(int N, double C);
+
+   //zadatak 3
+   virtual void Distribucija(int N, double C);
    
 };
 

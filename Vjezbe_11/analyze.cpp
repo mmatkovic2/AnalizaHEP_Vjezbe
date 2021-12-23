@@ -28,6 +28,10 @@ int main()
 	
 	//zadatak4
 	ob->Kocka(10, 0.683);
+
+	//zadatak 3
+	ob->Distribucija(10, 0.683);
+	
 	delete ob;
 	
 	return 0;
