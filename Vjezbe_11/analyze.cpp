@@ -16,15 +16,15 @@ int main()
 	Analyzer* ob;
 	ob = new Analyzer();
 	
-	int brojpovoljnih=7;
-	int brojukupnih=20;
-	double vjerojatnostpovoljnog=0.5;
+	int brojpovoljnih=3;
+	int brojukupnih=10;
+	double vjerojatnostpovoljnog=0.1667;
 	
 	cout << "Za " << brojpovoljnih << " povoljna dogadaja od " << brojukupnih << " ukupno " " uz p = " << vjerojatnostpovoljnog << " vjerojatnost povoljnog dogadaja imamo: " << ob->Binomial(brojpovoljnih, brojukupnih, vjerojatnostpovoljnog) << " vjerojatnost." << endl;
 	
 	//zadatak2
-	ob->GornjaGranica(1, 4, 0.687);
-	ob->DonjaGranica(1, 4, 0.687);	
+	ob->GornjaGranica(4, 10, 0.683);
+	ob->DonjaGranica(4, 10, 0.683);	
 	
 	//zadatak4
 	ob->Kocka(10, 0.683);

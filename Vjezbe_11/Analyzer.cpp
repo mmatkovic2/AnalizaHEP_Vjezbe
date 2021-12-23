@@ -65,6 +65,9 @@ double Analyzer::DonjaGranica(int m2, int N2, double C){
 	double pminus=1.0;	
 	double suma1=0.0, suma=10.0;
 	
+	if(m2==0){
+		return 0;
+	}
 	
 	while(suma>(1.0-C)/2.0){
 		for (int r1 = 0; r1< m2; r1++){
@@ -94,14 +97,12 @@ void Analyzer::Kocka(int N, double C){
 				brojac++;
 			}	
 		}
-				
 		pgornja=GornjaGranica(brojac, N, C);
 		pdonja=DonjaGranica(brojac, N, C);
 
-		if(pgornja>=(1.0/6.0) && pdonja<=(1.0/6)){
+		if(pgornja>=(1.0/6.0) && pdonja<=(1.0/6.0)){
 			brojpovoljnih++;
 		}
-		cout << i << endl;
 					
 	}
 
