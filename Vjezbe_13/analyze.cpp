@@ -16,8 +16,13 @@ int main()
 	Analyzer* ob;
 	ob = new Analyzer();
 
+	//Zadatak 1
 	//ob->Loop();
-	ob->Usporedba("Francuska", 164.7, 7.1);
+
+	//Zadatak 2
+	//ob->Usporedba("Francuska", 164.7, 7.1);
+	ob->Usporedba("Nizozemska", 170.3, 7.5);
+	//ob->Usporedba("Italija", 166.1, 6.5);
 
 	delete ob;
 	

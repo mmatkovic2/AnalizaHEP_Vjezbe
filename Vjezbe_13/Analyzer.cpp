@@ -9,6 +9,8 @@
 #include <TMath.h>
 #include <TLine.h>
 #include <TString.h>
+#include <TLegend.h>
+#include <TLatex.h>
 
 using namespace std;
 
@@ -101,7 +103,7 @@ void Analyzer::Loop()
     testStatistika->GetYaxis()->SetTitle("PDF - Francuska");
     testStatistika->SetStats(0);
     testStatistika->SetLineColor(kBlue);
-    testStatistika->Draw();
+    testStatistika->Draw("histo");
 
     //crtamo liniju srednje vrijednosti podataka na grafu
     TLine *line;
@@ -114,16 +116,16 @@ void Analyzer::Loop()
 //zadatak 2
 void Analyzer::Usporedba(TString ime, double srednja, double greska){
 	
-	TH1F *Spanjolska;
-	TH1F *DrugaDrzava;
-	Spanjolska = new TH1F("test statistika Spanjolske", "test statistika", 500, 155, 175);
-	DrugaDrzava = new TH1F("test statistika druge drzave", "test statistika", 500, 155, 175);
+	TH1F *Spanjolska = new TH1F("", "", 500, 160, 175);;
+	TH1F *DrugaDrzava = new TH1F("", "", 500, 160, 175);;
 
 	TRandom *randomvisina;
    	randomvisina = new TRandom();	
 
-	double sumaspanjolske;
-	double sumadruge;
+	double sumaspanjolske, sumadruge;
+	double t_spanjolske, t_druge;
+	double srednja_data=167.85; //izracunata srednja vrijednost podataka iz zadatka 1 i prepisana
+	double confidencelevel;
 
 	for(int i=0; i<1000000; i++)
    	{
@@ -142,6 +144,54 @@ void Analyzer::Usporedba(TString ime, double srednja, double greska){
 	Spanjolska->Scale(1.0/Spanjolska->Integral());
 	DrugaDrzava->Scale(1.0/DrugaDrzava->Integral());
 
+	//racunamo vrijednosti korisne za racune sa CL
+	t_spanjolske=Spanjolska->Integral(Spanjolska->FindBin(srednja_data), 500);
+	t_druge=DrugaDrzava->Integral(DrugaDrzava->FindBin(srednja_data), 500);
+
+	if(ime=="Nizozemska"){
+		//nizozemsku potrebno posebno izdvojiti jer se nalazi s "desne" strane španjolske
+		confidencelevel=1-((1-t_druge)/t_spanjolske);
+		cout << "Odbijamo Nizozemsku sa confidence levelom " << confidencelevel*100 << "%." << endl;
+	}
+	else{
+		confidencelevel=1-(t_druge/(1-t_spanjolske));
+		cout << "Odbijamo " << ime << " sa confidence levelom " << confidencelevel*100 << "%." << endl; 
+	}
+	//Rezultati za confidence level:
+	//Nizozemska: odbijamo sa confidence levelom od 99.9024%
+	//Francuska: odbijamo sa confidence levelom od 99.9988%
+	//Italija: odbijamo sa confidence levelom od 99.0848%
+	
+	//Crtamo distribuciju
+	gStyle->SetOptStat(0);
+	TCanvas *c1;
+	c1 = new TCanvas("c1", "c1", 1600, 900);
+	DrugaDrzava->SetTitle("H0 vs H1");
+	Spanjolska->SetTitle("H0 vs H1");
+	DrugaDrzava->GetXaxis()->SetTitle("visina");
+    	DrugaDrzava->GetYaxis()->SetTitle("PDF");
+	Spanjolska->GetXaxis()->SetTitle("visina");
+    	Spanjolska->GetYaxis()->SetTitle("PDF");
+	DrugaDrzava->SetLineColor(kBlue);
+	Spanjolska->SetLineColor(kRed);
+
+	Spanjolska->Draw("histo");
+	DrugaDrzava->Draw("histo same");
+	//Spanjolska->Draw("histo same");
+
+	//crtanje linije podataka
+	TLine *line1 = new TLine(srednja_data, 0., srednja_data, 0.018);
+	line1->Draw();
+	TLatex *text=new TLatex(srednja_data,-0.0016,"t_{podaci}");
+	text->Draw();
+	
+	//legenda
+	TLegend *legend=new TLegend(0.7,0.8,0.9,0.9);
+	legend->AddEntry(Spanjolska, "Spanjolska", "f");
+	legend->AddEntry(DrugaDrzava, ime, "f");
+	legend->Draw();
+	
+	c1->SaveAs("Spanjolska_vs_"+ime+".png");
 }
 
 
