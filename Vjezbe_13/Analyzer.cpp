@@ -116,8 +116,8 @@ void Analyzer::Loop()
 //zadatak 2
 void Analyzer::Usporedba(TString ime, double srednja, double greska){
 	
-	TH1F *Spanjolska = new TH1F("", "", 500, 160, 175);;
-	TH1F *DrugaDrzava = new TH1F("", "", 500, 160, 175);;
+	TH1F *Spanjolska = new TH1F("", "", 500, 160, 175);
+	TH1F *DrugaDrzava = new TH1F("", "", 500, 160, 175);
 
 	TRandom *randomvisina;
    	randomvisina = new TRandom();	
@@ -149,7 +149,7 @@ void Analyzer::Usporedba(TString ime, double srednja, double greska){
 	t_druge=DrugaDrzava->Integral(DrugaDrzava->FindBin(srednja_data), 500);
 
 	if(ime=="Nizozemska"){
-		//nizozemsku potrebno posebno izdvojiti jer se nalazi s "desne" strane španjolske
+		//nizozemsku potrebno posebno izdvojiti jer se nalazi s "desne" strane spanjolske
 		confidencelevel=1-((1-t_druge)/t_spanjolske);
 		cout << "Odbijamo Nizozemsku sa confidence levelom " << confidencelevel*100 << "%." << endl;
 	}
