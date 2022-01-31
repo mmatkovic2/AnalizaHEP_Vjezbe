@@ -20,9 +20,6 @@ using namespace std;
 void Analyzer::Fotoni(){
 	TRandom3 *r3 = new TRandom3();
 
-	TH1F *chisquare;
-	chisquare = new TH1F("chi square", "chi square", 250, 0, 25);	
-	
 	TF1 *funcfita;
 	funcfita = new TF1("funcfita", "[0]*exp(-x/[1])", 0.0, 300.0);
 	funcfita->SetParName(0, "N_sm");
@@ -57,3 +54,53 @@ void Analyzer::Fotoni(){
 	c->SaveAs("Z14_1.png");
 		
 }
+
+void Analyzer::Osjetljivost(){
+	TRandom3 *r3 = new TRandom3();
+
+	double m_H, pVrijednost;
+	int k=0;	
+	
+	TF1 *funcfita2;
+	funcfita2 = new TF1("funcfita2", "[0]*exp(-x/[1])", 0.0, 700.0);
+	funcfita2->SetParName(0, "N_sm");
+	funcfita2->SetParameter(0, 200);
+	funcfita2->SetParName(1, "Gama");
+	funcfita2->FixParameter(1, 100);
+	
+	TH1F* histogram2 = new TH1F("histo2", "histo2", 200, 0, 700);
+	TGraph *Pval = new TGraph();
+
+	
+	//setamo po svim masama Higgsa 10-690
+	for (int i=10; i<690; i=i+5){
+		m_H=i/1.0;
+		//sada petlja po 10000 dogadaja
+		for(int j=0; j<10000; j++){
+			if(r3->Rndm()>(-1*(m_H-190.0)*(m_H-190.0) + 0.02))
+				histogram2->Fill(r3->Exp(100)); //punjenje pozadine kao u zad 1
+			else
+				histogram2->Fill(r3->Gaus(m_H, 0.0236*m_H)); //punjenje signalnim podacima
+		}
+		histogram2->Fit(funcfita2, "q", "", i-10, i+10);
+		pVrijednost = chisquare->Integral(chisquare->FindBin(funcfita2->GetChisquare()), 200);
+		pVrijednost = pVrijednost/(chisquare->Integral());
+		Pval->SetPoint(k, m_H, pVrijednost);
+		histogram2->Reset();
+		k++;
+	}
+	
+	gStyle->SetOptStat(0);
+	TCanvas *c2 = new TCanvas("c2", "c2", 1600, 900);
+	gPad->SetLogy();	
+    	Pval->GetXaxis()->SetTitle("m_{H}");
+    	Pval->GetYaxis()->SetTitle("p-vrijednost");
+    	Pval->SetTitle("P-value/m_{H}");
+	Pval->Draw("AL*");
+
+
+	c2->SaveAs("Z14_2.png");
+
+}
+
+

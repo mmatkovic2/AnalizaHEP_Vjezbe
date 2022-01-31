@@ -21,8 +21,10 @@ public :
    
    //Vjezbe 14, zad 1
    virtual void Fotoni();
-   
-   
+   TH1F *chisquare =  new TH1F("chi square", "chi square", 250, 0, 25);
+
+   //Vjezbe 14, zad 2
+   virtual void Osjetljivost();
 };
 
 #endif

@@ -17,6 +17,7 @@ int main()
 	ob = new Analyzer();
 
 	ob->Fotoni();	
+	ob->Osjetljivost();
 
 	delete ob;
 	
