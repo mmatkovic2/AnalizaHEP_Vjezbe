@@ -5,6 +5,14 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <iostream>
+#include <TLegend.h>
+#include <TGraph.h>
+
+#include "TMVA/Factory.h"
+#include "TMVA/DataLoader.h"
+#include "TMVA/Tools.h"
+
+using namespace std;
 
 void Analyzer::Loop()
 {
@@ -45,7 +53,7 @@ void Analyzer::Loop()
 }
 
 void Analyzer::LoopPozadina(){
-	Init(Background);
+	Init(background);
 
 	histoB1 = new TH1F("histoB1", "Transverzalni Moment", 280, 0, 140);
 	//vrtimo petlju za filanje podataka iz patha Background
@@ -65,7 +73,7 @@ void Analyzer::LoopPozadina(){
 }
 
 void Analyzer::LoopSignal(){
-	Init(Signal);
+	Init(signal);
 
 	histoS1 = new TH1F("histoS1", "Transverzalni moment", 280, 0, 140);
 	//vrtimo petlju za filanje podataka iz patha Background
@@ -104,4 +112,88 @@ void Analyzer::HistogramPlot(){
 
 	c->SaveAs("8_Distribucija.png");
 
+}
+
+void Analyzer::MVATraining(){
+   TString outfileName( "TMVA.root" );
+   TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
+   
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+   TMVA::DataLoader *dataloader = new TMVA::DataLoader("dataset");
+   
+   // Add variables //
+   dataloader->AddVariable( "ele_pt", 'F' );
+   dataloader->AddVariable( "ele_fbrem", 'F' );
+   dataloader->AddVariable( "ele_ep", 'F' );
+   dataloader->AddVariable( "ele_pfChargedHadIso", 'F' );
+   dataloader->AddVariable( "ele_eelepout", 'F' );
+   dataloader->AddVariable( "ele_gsfchi2", 'F' );
+
+   
+   // global event weights per tree (see below for setting event-wise weights)
+   Double_t signalWeight     = 1.0;
+   Double_t backgroundWeight = 1.0;
+   
+   // You can add an arbitrary number of signal or background trees
+   dataloader->AddSignalTree( signal, signalWeight );
+   dataloader->AddBackgroundTree( background, backgroundWeight );
+   
+   // Apply additional cuts on the signal and background samples (possibly not needed)
+   TCut mycuts = ""; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+   TCut mycutb = ""; // for example: TCut mycutb = "abs(var1)<0.5";
+   
+   dataloader->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1000:nTrain_Background=1000:SplitMode=Random:NormMode=NumEvents:!V" );
+   
+   // Chose MVA method //
+   //if (Use["BDT"])
+   factory->BookMethod( dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=850:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=20" );
+   
+   // Train MVAs using the set of training events
+   factory->TrainAllMethods();
+   // Evaluate all MVAs using the set of test events
+   factory->TestAllMethods();
+   // Evaluate and compare performance of all configured MVAs
+   factory->EvaluateAllMethods();
+   
+   // Save the output
+   outputFile->Close();
+   std::cout << "==> Wrote root file: " << outputFile->GetName() << std::endl;
+   std::cout << "==> TMVAClassification is done!" << std::endl;
+   delete factory;
+   delete dataloader;
+}
+
+void Analyzer::MVAPlot(){
+   TFile* f = new TFile("TMVA.root");
+
+    TGraph* graf_signal;
+    TGraph* graf_pozadina;
+    graf_signal = (TGraph*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_S");
+    graf_pozadina = (TGraph*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_B");
+
+    TH1F* histogram;
+    histogram = (TH1F*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_effBvsS");
+
+    TCanvas* c = new TCanvas("c", "c", 1800, 900);
+    c->Divide(2);
+    gStyle->SetOptStat(0);
+
+    c->cd(1);				
+    graf_signal->SetTitle("Distribution of MVA results (BDT)");
+    graf_signal->SetLineColor(kBlue);
+    graf_pozadina->SetLineColor(kRed);
+    graf_signal->Draw();
+    graf_pozadina->Draw("same");
+
+    TLegend* legenda = new TLegend(0.8, 0.82, 0.95, 0.92);
+    legenda->AddEntry(graf_signal, "Signal", "l");
+    legenda->AddEntry(graf_pozadina, "Background", "l");
+    legenda->Draw();
+
+    c->cd(2);				
+    histogram->SetLineColor(kRed);
+    cout << "Za 90 posto signalnih elektrona: " << histogram->Interpolate(0.9) * 100.0 << "%" << endl;
+    histogram->Draw();
+	
+    c->SaveAs("MVA_BDT_zad4.png");
 }

@@ -20,6 +20,9 @@ int main()
 	ob->LoopPozadina();
 
 	ob->HistogramPlot();
+
+	ob->MVATraining();
+	ob->MVAPlot();
 	delete ob;
 	
 	return 0;

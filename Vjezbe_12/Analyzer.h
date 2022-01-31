@@ -26,8 +26,8 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    //dodani branchevi za signalni i pozadinski file u rootu
-   TTree	  *Signal;
-   TTree	  *Background;
+   TTree	  *signal;
+   TTree	  *background;
 
    TH1F* histoB1;
    TH1F* histoS1;
@@ -183,6 +183,8 @@ public :
    void LoopPozadina();
    void LoopSignal();
    void HistogramPlot();
+   void MVATraining();
+   void MVAPlot();
 };
 
 #endif
@@ -192,6 +194,7 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
+/*
    if (tree == 0) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/home/public/data/ElectronTraining/Electrons.root");
       if (!f || !f->IsOpen()) {
@@ -204,6 +207,10 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
 
 	//histoB1 = new TH1F("histoB1", "Transverzalni Moment", 280, 0, 140);
 	//histoS1 = new TH1F("histoS1", "Transverzalni moment", 280, 0, 140);
+*/
+   TFile *f = new TFile("/home/public/data/ElectronTraining/Electrons.root", "READ");
+   signal = (TTree*)f->Get("signal");
+   background = (TTree*)f->Get("background");
 }
 
 Analyzer::~Analyzer()
